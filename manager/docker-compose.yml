@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  caddy:
+    restart: always
+    image: ghcr.io/ghostgpt/caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+  manager:
+    restart: always
+    ports:
+      # 将 grpc 端口暴露出来，caddy 反代 grpc 还存在问题
+      - "8080:8080"
+    env_file: ./manager/.env
+    image: ghcr.io/ghostgpt/caddy-manager:latest
+    volumes:
+      - ./manager:/caddy-manager/data/
+  manager-frontend:
+    restart: always
+    image: ghcr.io/ghostgpt/caddy-manager-frontend:latest
+  # 可选，自动更新
+  watchtower:
+    restart: always
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300

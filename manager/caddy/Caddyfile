@@ -1,0 +1,32 @@
+{
+    #debug
+    order forward_proxy before reverse_proxy
+}
+
+# 可选节点，:443 是必须的，不能删除
+:443, node.caddy-manager.com {
+    tls webmaster@caddy-manager.com
+    forward_proxy {
+        hide_ip
+        hide_via
+        probe_resistance www.baidu.com
+        dashboard {
+            use_tls false
+            grpc manager.caddy-manager.com:8080
+            # 节点的 UUID
+            server_id 95aba818-f179-422c-84da-8165cf5e528a
+            # manager 配置的 NODE_SECTET
+            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb
+        }
+    }
+    # 伪装站点
+    reverse_proxy https://google.github.io {
+        header_up Host {upstream_hostport}
+    }
+}
+
+# 管理面板站点
+manager.caddy-manager.com {
+    tls webmaster@caddy-manager.com
+    reverse_proxy manager:8080
+}

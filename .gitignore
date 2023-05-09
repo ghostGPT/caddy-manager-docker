@@ -1,0 +1,4 @@
+*.db
+.env
+**/caddy/config
+**/caddy/data
