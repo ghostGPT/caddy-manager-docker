@@ -137,4 +137,9 @@ node/
 - 进入node目录后运行 ```docker-compose up -d``` 
 - 相关客户端配置请谷歌
 
-# Enjoy
+## 用户配置
+- 登录上一步中搭建好的面板，新增Plans，请填写两遍，确保plan下有node
+- ![plan](images/plan.png)
+- ![plan1](images/plan1.png)
+- 进入Users给用户分配Plan UUID、设置流量限制，即可通畅上网 
+- ![user](images/user.png)
