@@ -6,7 +6,7 @@
 - node 单节点
 # 安装指南
 
-确保已经安装Docker Compose,全新环境可使用 ```curl -sSL https://get.docker.com/ | sh``` 一键安装
+确保需要部署的面板鸡和落地鸡都已经安装Docker Compose,全新环境可使用 ```curl -sSL https://get.docker.com/ | sh``` 一键安装
 
 ## manger
 
@@ -60,11 +60,9 @@ Github、Gitlab、Jihulab、Gitee 作为后台管理员账号
         probe_resistance www.baidu.com
         dashboard {
             use_tls false
-            grpc manager.caddy-manager.com:8080
-            # 节点的 UUID
-            server_id 95aba818-f179-422c-84da-8165cf5e528a
-            # manager 配置的 NODE_SECTET
-            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb
+            grpc manager.caddy-manager.com:8080 # 当节点记得修改这里
+            server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e # 获取到的节点UUID
+            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb # .env中写入的 node_secret
         }
     }
     # 伪装站点
@@ -83,4 +81,60 @@ manager.caddy-manager.com {
 ``` 
 #### 运行面板
 - 进入manager目录后运行 ```docker-compose up -d``` 打开  你修改 manager.caddy-manager.com 后的域名 登录即可进入面板
-- ![Demo](images/manager.png)
+- ![DEMO](images/manager.png)
+
+## node
+
+- 1-下载整个node文件夹到你需要部署的鸡上
+- 2-获取 manager生成的 UUID
+- 3-修改 ```Caddyfile```中的各项配置
+- 4-确保 80、443 端口可用 
+
+#### node目录检查
+你的目录应该包括如下所有文件：
+```
+node/
+├── caddy
+│   └── Caddyfile
+└── docker-compose.yaml
+
+```
+#### 生成UUID
+- 登录上一步中搭建好的面板，进入Nodes,点击ADD，填入相关信息
+- ![INFO](images/info.png)
+- 复制生成的UUID准备修改Caddyfile
+- ![UUID](images/uuid.png)
+- 参照注释修改 Caddyfile
+```
+{
+    order forward_proxy before reverse_proxy
+}
+
+# 节点，:443 是必须的，不能删除   node2.caddy-manager.com 修改为你自己的域名 webmaster@caddy-manager.com 选择修改
+:443, node2.caddy-manager.com {
+    tls webmaster@caddy-manager.com
+    forward_proxy {
+        hide_ip
+        hide_via
+        probe_resistance nb.com
+        dashboard {
+            use_tls false
+            grpc manager.caddy-manager.com:8080 # 上一步搭建面板鸡的信息
+            server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e # 获取到的节点UUID
+            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb # .env中写入的 node_secret
+        }
+    }
+    # 伪装站点
+    reverse_proxy https://google.github.io {
+        header_up Host {upstream_hostport}
+    }
+}
+
+# 还可以托管其他站点
+
+```
+#### 运行节点
+- 进入node目录后运行 ```docker-compose up -d``` 
+- 相关客户端配置请谷歌
+
+# Enjoy
