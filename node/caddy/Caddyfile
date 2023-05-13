@@ -4,7 +4,9 @@
 
 # 节点，:443 是必须的，不能删除
 :443, node2.caddy-manager.com {
-    tls webmaster@caddy-manager.com
+    tls {
+         dns cloudflare 【cf api】
+    }
     forward_proxy {
         hide_ip
         hide_via
