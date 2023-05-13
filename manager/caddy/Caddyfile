@@ -11,8 +11,8 @@
         hide_via
         probe_resistance www.baidu.com
         dashboard {
-            use_tls false
-            grpc manager.caddy-manager.com:8080
+            use_tls true
+            grpc manager.caddy-manager.com:443
             # 节点的 UUID
             server_id 95aba818-f179-422c-84da-8165cf5e528a
             # manager 配置的 NODE_SECTET

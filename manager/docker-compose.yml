@@ -13,9 +13,6 @@ services:
       - ./caddy/config:/config
   manager:
     restart: always
-    ports:
-      # 将 grpc 端口暴露出来，caddy 反代 grpc 还存在问题
-      - "8080:8080"
     env_file: ./manager/.env
     image: ghcr.io/ghostgpt/caddy-manager:latest
     volumes:
