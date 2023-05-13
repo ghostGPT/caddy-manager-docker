@@ -10,10 +10,11 @@
 
 ## manger
 
-- 1-下载整个manager文件夹到你需要部署的面板鸡上
-- 2-获取 Github/Jihulab 的 Client ID 和密钥
-- 3-修改 ```.env.example```中的各项配置，并重命名 ```.env.example```为```.env```
-- 4-确保 443 端口可用 
+1. 下载整个manager文件夹到你需要部署的面板鸡上
+2. 获取 Github 的 Client ID 和密钥
+3. 修改 ```.env.example```中的各项配置，并重命名 ```.env.example```为```.env```
+4. 确保 443 端口可用
+
 #### manger目录检查
 你的目录应该包括如下所有文件：
 ```
@@ -27,29 +28,24 @@ manager/
 
 #### 获取Client ID、Secret
 
-Github、Gitlab、Jihulab、Gitee 作为后台管理员账号  
-- 首先我们需要新建一个验证应用，以 Github 为例，登录 Github 后，打开 https://github.com/settings/developers ，依次选择“OAuth Apps” - “New OAuth App”    
+- 登录 Github 后，打开 https://github.com/settings/developers ，依次选择“OAuth Apps” - “New OAuth App”    
 `Application name` - 随意填写  
 `Homepage URL` - 填写面板的访问域名，如："http://example.com"  
 `Authorization callback URL` - 填写回调地址，如："http://cdn.example.com/oauth2-callback"  
 - 点击 “Register application” 
 - 保存页面中的 Client ID，然后点击 “Generate a new client secret“，创建一个新的 Client Secret，新建的密钥仅会显示一次，请妥善保存
-<br/>
-- JihuLab 的应用创建入口为：https://jihulab.com/-/profile/applications  
-- `Redirect URL` 中应填入回调地址  
-- 在下方`范围`中勾选 `read_user` 和 `read_api` 
-- 创建完成后，保存好应用程序 ID 和密码
 
 #### 获取 CF Api
 - 登录账号并访问 https://dash.cloudflare.com/profile/api-tokens
 - 创建令牌 选择“编辑区域 DNS”模板,记录下api
-- ![cfapi](images/cfapi.png)
+  ![cfapi](images/cfapi.png)
 
 #### 修改配置
 - 将上一步获取的 id、secret 替换env中的 client_id、client_secret
 - 设置或随机生成一个密码（https://suijimimashengcheng.bmcx.com/） 替换env中的 node_secret
 - 打开https://api.github.com/users/{你的github用户名} 获取你的id 替换env中的000000
 - 修改Caddyfile，如下 （如果面板鸡不当节点请删除 ==== 分割的内容）
+
 ```
 {
     #debug
@@ -97,14 +93,14 @@ manager.caddy-manager.com {
 ``` 
 #### 运行面板
 - 进入manager目录后运行 ```docker-compose up -d``` 打开  你修改 manager.caddy-manager.com 后的域名 登录即可进入面板
-- ![DEMO](images/manager.png)
+  ![DEMO](images/manager.png)
 
 ## node
 
-- 1-下载整个node文件夹到你需要部署的鸡上
-- 2-获取 manager生成的 UUID
-- 3-修改 ```Caddyfile```中的各项配置
-- 4-确保 443 端口可用 
+1. 下载整个node文件夹到你需要部署的鸡上
+2. 获取 manager生成的 UUID
+3. 修改 ```Caddyfile```中的各项配置
+4. 确保 443 端口可用 
 
 #### node目录检查
 你的目录应该包括如下所有文件：
@@ -117,9 +113,9 @@ node/
 ```
 #### 生成UUID
 - 登录上一步中搭建好的面板，进入Nodes,点击ADD，填入相关信息
-- ![INFO](images/info.png)
+  ![INFO](images/info.png)
 - 复制生成的UUID准备修改Caddyfile
-- ![UUID](images/uuid.png)
+  ![UUID](images/uuid.png)
 - 参照注释修改 Caddyfile
 ```
 {
@@ -157,7 +153,7 @@ node/
 
 ## 用户配置
 - 登录上一步中搭建好的面板，新增Plans，请填写两遍，确保plan下有node
-- ![plan](images/plan.png)
-- ![plan1](images/plan1.png)
+  ![plan](images/plan.png)
+  ![plan1](images/plan1.png)
 - 进入Users给用户分配Plan UUID、设置流量限制，即可通畅上网 
-- ![user](images/user.png)
+  ![user](images/user.png)
