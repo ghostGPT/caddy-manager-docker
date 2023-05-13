@@ -13,7 +13,7 @@
 - 1-下载整个manager文件夹到你需要部署的面板鸡上
 - 2-获取 Github/Jihulab 的 Client ID 和密钥
 - 3-修改 ```.env.example```中的各项配置，并重命名 ```.env.example```为```.env```
-- 4-确保 80、443、8080 端口可用 
+- 4-确保 443 端口可用 
 #### manger目录检查
 你的目录应该包括如下所有文件：
 ```
@@ -40,6 +40,11 @@ Github、Gitlab、Jihulab、Gitee 作为后台管理员账号
 - 在下方`范围`中勾选 `read_user` 和 `read_api` 
 - 创建完成后，保存好应用程序 ID 和密码
 
+#### 获取 CF Api
+- 登录账号并访问 https://dash.cloudflare.com/profile/api-tokens
+- 创建令牌 选择“编辑区域 DNS”模板,记录下api
+- ![cfapi](images/cfapi.png)
+
 #### 修改配置
 - 将上一步获取的 id、secret 替换env中的 client_id、client_secret
 - 设置或随机生成一个密码（https://suijimimashengcheng.bmcx.com/） 替换env中的 node_secret
@@ -53,16 +58,20 @@ Github、Gitlab、Jihulab、Gitee 作为后台管理员账号
 # ==================不当节点删除我================
 # 可选节点，:443 是必须的，不能删除
 :443, node.caddy-manager.com {
-    tls webmaster@caddy-manager.com
+    tls {
+         dns cloudflare 【cf api】
+    }
     forward_proxy {
         hide_ip
         hide_via
         probe_resistance www.baidu.com
         dashboard {
-            use_tls false
-            grpc manager.caddy-manager.com:8080 # 当节点记得修改这里
-            server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e # 获取到的节点UUID
-            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb # .env中写入的 node_secret
+            use_tls true
+            grpc manager.caddy-manager.com:443
+            # 节点的 UUID
+            server_id 95aba818-f179-422c-84da-8165cf5e528a
+            # manager 配置的 NODE_SECTET
+            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb
         }
     }
     # 伪装站点
@@ -72,10 +81,17 @@ Github、Gitlab、Jihulab、Gitee 作为后台管理员账号
 }
 # ==================不当节点删除我================
 
-# 管理面板站点 manager.caddy-manager.com 请改成你自己的域名并且添加对应解析 ，webmaster@caddy-manager.com 可选择修改
+# 管理面板站点 manager.caddy-manager.com 请改成你自己的域名并且添加对应解析 修改  【cf api】
 manager.caddy-manager.com {
-    tls webmaster@caddy-manager.com
-    reverse_proxy manager:8080
+    tls {
+         dns cloudflare 【cf api】
+    }
+    reverse_proxy {
+        to manager:8080
+        transport http {
+            versions h2c 2
+        }
+    }
 }
 
 ``` 
@@ -88,7 +104,7 @@ manager.caddy-manager.com {
 - 1-下载整个node文件夹到你需要部署的鸡上
 - 2-获取 manager生成的 UUID
 - 3-修改 ```Caddyfile```中的各项配置
-- 4-确保 80、443 端口可用 
+- 4-确保 443 端口可用 
 
 #### node目录检查
 你的目录应该包括如下所有文件：
@@ -112,16 +128,18 @@ node/
 
 # 节点，:443 是必须的，不能删除   node2.caddy-manager.com 修改为你自己的域名 webmaster@caddy-manager.com 选择修改
 :443, node2.caddy-manager.com {
-    tls webmaster@caddy-manager.com
+    tls {
+         dns cloudflare 【cf api】
+    }
     forward_proxy {
         hide_ip
         hide_via
         probe_resistance nb.com
         dashboard {
-            use_tls false
-            grpc manager.caddy-manager.com:8080 # 上一步搭建面板鸡的信息
-            server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e # 获取到的节点UUID
-            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb # .env中写入的 node_secret
+            use_tls true
+            grpc manager.caddy-manager.com:443  # 上一步搭建面板鸡的信息
+            server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e  # 获取到的节点UUID
+            secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb     # .env中写入的 node_secret
         }
     }
     # 伪装站点
