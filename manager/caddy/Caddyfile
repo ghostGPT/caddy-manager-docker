@@ -28,5 +28,10 @@
 # 管理面板站点
 manager.caddy-manager.com {
     tls webmaster@caddy-manager.com
-    reverse_proxy manager:8080
+    reverse_proxy {
+        to manager:8080
+        transport http {
+            versions h2c 2
+        }
+    }
 }
