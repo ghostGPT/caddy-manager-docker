@@ -14,6 +14,8 @@ services:
     restart: always
     env_file: ./manager/.env
     image: ghcr.io/ghostgpt/caddy-manager:latest
+    ports:
+      - "8080:8080"
     volumes:
       - ./manager:/caddy-manager/data/
   manager-frontend:

@@ -12,8 +12,9 @@
         hide_via
         probe_resistance nb.com
         dashboard {
-            use_tls true
-            grpc manager.caddy-manager.com:443
+            use_tls false
+            # manger 服务器（不要通过 CDN）
+            grpc manager.caddy-manager.com:8080
             server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e
             secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb
         }
