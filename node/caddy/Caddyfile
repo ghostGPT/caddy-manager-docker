@@ -3,18 +3,21 @@
 }
 
 # 节点，:443 是必须的，不能删除
-:443, node2.caddy-manager.com {
-    tls {
-         dns cloudflare 【cf api】
-    }
+:443,  node2.caddy-manager.com {
+    # 内置的 ACME 证书
+    tls you@name.com
+    # 通过 Cloudflare API 自动获取证书
+    #tls {
+    #     dns cloudflare 【cf api】
+    #}
     forward_proxy {
         hide_ip
         hide_via
         probe_resistance nb.com
         dashboard {
-            use_tls false
-            # manger 服务器（不要通过 CDN）
-            grpc manager.caddy-manager.com:8080
+            use_tls true
+            # manger 服务器（如果 Cloudflare 需启用 gRPC 选项）
+            grpc manager.caddy-manager.com:443
             server_id 6dc58acd-3712-4231-b7c2-1ce042b0a72e
             secret_key 969a57c2-b63d-4c31-97a0-e908e66576cb
         }

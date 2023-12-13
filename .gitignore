@@ -2,3 +2,4 @@
 .env
 **/caddy/config
 **/caddy/data
+/local
